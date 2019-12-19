@@ -1,10 +1,14 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment, useEffect, useContext } from 'react';
 import Spinner from '../layout/Spinner';
 import Repos from '../repos/Repos';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import GithubContext from '../../context/github/githubContext';
 
-const User = ({ user, loading, getUser, getUserRepos, match, repos }) => {
+const User = ({ match }) => {
+  const githubContext = useContext(GithubContext);
+
+  const { getUser, loading, user, repos, getUserRepos } = githubContext;
+
   useEffect(() => {
     getUser(match.params.login);
     getUserRepos(match.params.login);
@@ -13,11 +17,11 @@ const User = ({ user, loading, getUser, getUserRepos, match, repos }) => {
 
   const {
     name,
+    company,
     avatar_url,
     location,
-    blog,
-    company,
     bio,
+    blog,
     login,
     html_url,
     followers,
@@ -48,8 +52,8 @@ const User = ({ user, loading, getUser, getUserRepos, match, repos }) => {
             alt=""
             style={{ width: '150px' }}
           />
-          <h1> {name}</h1>
-          <p> Location: {location}</p>
+          <h1>{name}</h1>
+          <p>Location: {location}</p>
         </div>
         <div>
           {bio && (
@@ -65,24 +69,23 @@ const User = ({ user, loading, getUser, getUserRepos, match, repos }) => {
             <li>
               {login && (
                 <Fragment>
-                  <strong>Username: </strong>
-                  {login}
+                  <strong>Username: </strong> {login}
                 </Fragment>
               )}
             </li>
+
             <li>
               {company && (
                 <Fragment>
-                  <strong>Company: </strong>
-                  {company}
+                  <strong>Company: </strong> {company}
                 </Fragment>
               )}
             </li>
+
             <li>
               {blog && (
                 <Fragment>
-                  <strong>Website: </strong>
-                  {blog}
+                  <strong>Website: </strong> {blog}
                 </Fragment>
               )}
             </li>
@@ -92,20 +95,12 @@ const User = ({ user, loading, getUser, getUserRepos, match, repos }) => {
       <div className="card text-center">
         <div className="badge badge-primary">Followers: {followers}</div>
         <div className="badge badge-success">Following: {following}</div>
-        <div className="badge badge-white">Public Repos: {public_repos}</div>
+        <div className="badge badge-light">Public Repos: {public_repos}</div>
         <div className="badge badge-dark">Public Gists: {public_gists}</div>
       </div>
       <Repos repos={repos} />
     </Fragment>
   );
-};
-
-User.propTypes = {
-  loading: PropTypes.bool,
-  user: PropTypes.object.isRequired,
-  repos: PropTypes.array.isRequired,
-  getUser: PropTypes.func.isRequired,
-  getUserRepos: PropTypes.func.isRequired,
 };
 
 export default User;
